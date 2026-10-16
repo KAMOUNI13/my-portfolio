@@ -60,11 +60,15 @@ const Contact = () => {
 
       const result = await response.json();
 
-      if (!response.ok || result.success !== 'true' && result.success !== true) {
+      if (
+        !response.ok ||
+        (result.success !== 'true' && result.success !== true)
+      ) {
         throw new Error(
           "L'envoi a échoué. Vérifiez votre adresse e-mail et l'activation de FormSubmit."
         );
       }
+
 
       setStatus({
         submitting: false,
@@ -290,11 +294,10 @@ const Contact = () => {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={status.submitting}
-              className={`w-full bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-lg font-bold py-4 rounded-lg shadow-lg hover:from-cyan-500 hover:to-blue-600 transition-all duration-200 ${
-                status.submitting
+              className={`w-full bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-lg font-bold py-4 rounded-lg shadow-lg hover:from-cyan-500 hover:to-blue-600 transition-all duration-200 ${status.submitting
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
-              }`}
+                }`}
             >
               {status.submitting
                 ? 'Envoi en cours...'
