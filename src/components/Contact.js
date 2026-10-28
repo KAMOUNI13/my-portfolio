@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   FaEnvelope,
@@ -7,15 +7,132 @@ import {
   FaMapMarkerAlt,
   FaGithub,
   FaLinkedin,
+  FaDownload,
+  FaPaperPlane,
+  FaCheckCircle,
 } from 'react-icons/fa';
 
+const API_URL =
+  'https://formsubmit.co/ajax/kamounimohamed22@gmail.com';
+
+const CV_URL = '/CV_KAMOUNI_MOHAMED_IT.pdf';
+
+const initialForm = {
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+};
+
+const inputClasses = `
+  w-full rounded-xl border border-slate-300 dark:border-slate-700
+  bg-white dark:bg-[#112240]
+  text-slate-900 dark:text-white
+  placeholder-slate-400 dark:placeholder-slate-500
+  px-4 py-3.5 outline-none
+  transition-all duration-200
+  focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20
+`;
+
+const content = {
+  fr: {
+    eyebrow: 'Parlons de votre projet',
+    title: 'Contact',
+    intro:
+      'Vous avez une opportunité professionnelle, une proposition de collaboration ou un projet web ? Contactez-moi.',
+    contactTitle: 'Restons en contact',
+    contactDescription:
+      "Je suis à la recherche d'opportunités professionnelles dans le développement web et les solutions digitales. Je reste ouvert aux offres d'emploi et aux collaborations.",
+    email: 'E-mail',
+    phone: 'Téléphone',
+    location: 'Localisation',
+    city: 'Settat, Maroc',
+    cvTitle: 'Mon CV',
+    cvDescription:
+      'Consultez mon parcours, mes compétences et mon expérience professionnelle.',
+    downloadCV: 'Télécharger mon CV',
+    socialTitle: 'Retrouvez-moi également sur',
+    github: 'Mon profil GitHub',
+    linkedin: 'Mon profil LinkedIn',
+    formTitle: 'Envoyez-moi un message',
+    formDescription:
+      'Remplissez les champs ci-dessous. Je vous répondrai dès que possible.',
+    name: 'Votre nom',
+    namePlaceholder: 'Nom complet',
+    emailLabel: 'Votre adresse e-mail',
+    emailPlaceholder: 'exemple@email.com',
+    subject: 'Objet du message',
+    subjectPlaceholder: 'Ex. : Opportunité professionnelle',
+    message: 'Votre message',
+    messagePlaceholder: 'Écrivez votre message ici...',
+    characters: 'caractères',
+    send: 'Envoyer le message',
+    sending: 'Envoi en cours...',
+    success:
+      'Votre message a été envoyé avec succès. Merci pour votre prise de contact !',
+    sendError:
+      "L'envoi a échoué. Vérifiez la configuration de FormSubmit et réessayez.",
+    networkError:
+      "Une erreur est survenue. Vérifiez votre connexion et réessayez.",
+    privacy:
+      'Vos informations sont utilisées pour répondre à votre message.',
+  },
+
+  en: {
+    eyebrow: "Let's talk about your project",
+    title: 'Contact',
+    intro:
+      'Have a job opportunity, a collaboration proposal, or a web project? Feel free to contact me.',
+    contactTitle: "Let's stay in touch",
+    contactDescription:
+      'I am looking for professional opportunities in web development and digital solutions. I am open to job offers and collaborations.',
+    email: 'Email',
+    phone: 'Phone',
+    location: 'Location',
+    city: 'Settat, Morocco',
+    cvTitle: 'My CV',
+    cvDescription:
+      'Discover my background, skills, and professional experience.',
+    downloadCV: 'Download my CV',
+    socialTitle: 'You can also find me on',
+    github: 'My GitHub profile',
+    linkedin: 'My LinkedIn profile',
+    formTitle: 'Send me a message',
+    formDescription:
+      'Fill in the form below. I will get back to you as soon as possible.',
+    name: 'Your name',
+    namePlaceholder: 'Full name',
+    emailLabel: 'Your email address',
+    emailPlaceholder: 'example@email.com',
+    subject: 'Message subject',
+    subjectPlaceholder: 'e.g. Job opportunity',
+    message: 'Your message',
+    messagePlaceholder: 'Write your message here...',
+    characters: 'characters',
+    send: 'Send message',
+    sending: 'Sending...',
+    success:
+      'Your message was sent successfully. Thank you for reaching out!',
+    sendError:
+      'Sending failed. Please check your FormSubmit configuration and try again.',
+    networkError:
+      'Something went wrong. Check your connection and try again.',
+    privacy: 'Your information is used to respond to your message.',
+  },
+};
+
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+  const [language, setLanguage] = useState(() => {
+    try {
+      return localStorage.getItem('portfolio-language') === 'en'
+        ? 'en'
+        : 'fr';
+    } catch {
+      return 'fr';
+    }
   });
+
+  const [formData, setFormData] = useState(initialForm);
 
   const [status, setStatus] = useState({
     submitting: false,
@@ -23,17 +140,61 @@ const Contact = () => {
     error: null,
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    const handleLanguageChange = (event) => {
+      const selectedLanguage =
+        typeof event.detail === 'string'
+          ? event.detail
+          : event.detail?.language;
 
-    setFormData((prev) => ({
-      ...prev,
+      if (selectedLanguage === 'fr' || selectedLanguage === 'en') {
+        setLanguage(selectedLanguage);
+      } else {
+        try {
+          const savedLanguage =
+            localStorage.getItem('portfolio-language');
+
+          setLanguage(savedLanguage === 'en' ? 'en' : 'fr');
+        } catch {
+          setLanguage('fr');
+        }
+      }
+    };
+
+    window.addEventListener(
+      'portfolio-language-change',
+      handleLanguageChange
+    );
+
+    return () => {
+      window.removeEventListener(
+        'portfolio-language-change',
+        handleLanguageChange
+      );
+    };
+  }, []);
+
+  const t = content[language] || content.fr;
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
       [name]: value,
+    }));
+
+    setStatus((previous) => ({
+      ...previous,
+      submitted: false,
+      error: null,
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (status.submitting) return;
 
     setStatus({
       submitting: true,
@@ -42,267 +203,469 @@ const Contact = () => {
     });
 
     try {
-      const response = await fetch(
-        'https://formsubmit.co/ajax/kamounimohamed22@gmail.com',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData,
-            _subject: `Portfolio - ${formData.subject}`,
-            _template: 'table',
-          }),
-        }
-      );
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          _subject: `Portfolio - ${formData.subject}`,
+          _template: 'table',
+        }),
+      });
 
       const result = await response.json();
 
       if (
         !response.ok ||
-        (result.success !== 'true' && result.success !== true)
+        (result.success !== true && result.success !== 'true')
       ) {
-        throw new Error(
-          "L'envoi a échoué. Vérifiez votre adresse e-mail et l'activation de FormSubmit."
-        );
+        throw new Error('FORM_SUBMIT_FAILED');
       }
 
+      setFormData({ ...initialForm });
 
       setStatus({
         submitting: false,
         submitted: true,
         error: null,
       });
-
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
     } catch (error) {
       setStatus({
         submitting: false,
         submitted: false,
         error:
-          error.message ||
-          "Une erreur est survenue lors de l'envoi du message.",
+          error.message === 'FORM_SUBMIT_FAILED'
+            ? t.sendError
+            : t.networkError,
       });
     }
   };
 
+  const contactItems = [
+    {
+      icon: FaEnvelope,
+      label: t.email,
+      value: 'kamounimohamed22@gmail.com',
+      href: 'mailto:kamounimohamed22@gmail.com',
+    },
+    {
+      icon: FaPhone,
+      label: t.phone,
+      value: '+212 696 649 113',
+      href: 'tel:+212696649113',
+    },
+    {
+      icon: FaMapMarkerAlt,
+      label: t.location,
+      value: t.city,
+      href: null,
+    },
+  ];
+
   return (
     <section
       id="contact"
-      className="py-20 bg-gradient-to-b from-[#0a192f] to-[#0d2544] min-h-screen"
+      lang={language}
+      dir="ltr"
+      className="
+        relative min-h-screen overflow-hidden
+        bg-slate-50 dark:bg-[#0a192f]
+        py-20 sm:py-24 transition-colors duration-300
+      "
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête */}
+      {/* Background decoration */}
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute -top-32 -right-32
+          h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl
+        "
+      />
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute bottom-0 -left-32
+          h-72 w-72 rounded-full bg-blue-500/10 blur-3xl
+        "
+      />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="text-left mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <h2 className="text-5xl font-extrabold text-white mb-2 flex items-center gap-4">
-            Contact
-            <span className="block w-24 h-1 bg-cyan-400 rounded ml-2" />
+          <p className="mb-3 font-semibold uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400">
+            {t.eyebrow}
+          </p>
+
+          <h2 className="flex flex-wrap items-center gap-4 text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl">
+            {t.title}
+            <span className="mt-2 h-1 w-16 rounded-full bg-cyan-500 sm:w-24" />
           </h2>
 
-          <p className="text-xl text-gray-300">
-            N'hésitez pas à me contacter
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
+            {t.intro}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Informations de contact */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+          {/* Contact information */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -25 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-10 shadow-xl border border-gray-700/50"
+            className="
+              rounded-2xl border border-slate-200
+              bg-white p-6 shadow-xl shadow-slate-200/40
+              dark:border-slate-700/70 dark:bg-gradient-to-br
+              dark:from-[#112240] dark:to-[#0d1b32]
+              dark:shadow-black/20 sm:p-9 lg:p-10
+            "
           >
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Restons en contact
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+              {t.contactTitle}
             </h3>
 
-            <p className="text-gray-300 mb-8 max-w-md">
-              Je suis à la recherche d'opportunités professionnelles
-              dans le développement web et les solutions digitales.
-              Pour toute proposition d'emploi, collaboration ou projet,
-              n'hésitez pas à me contacter.
+            <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
+              {t.contactDescription}
             </p>
 
-            <div className="space-y-6">
-              {/* Adresse e-mail */}
-              <div className="flex items-center gap-4">
-                <span className="bg-cyan-900/60 p-3 rounded-full flex items-center justify-center">
-                  <FaEnvelope className="text-cyan-400 text-2xl" />
-                </span>
+            {/* Contact details */}
+            <div className="mt-8 space-y-6">
+              {contactItems.map((item) => {
+                const Icon = item.icon;
 
-                <div>
-                  <span className="block text-white font-semibold">
-                    E-mail
-                  </span>
-
-                  <a
-                    href="mailto:kamounimohamed22@gmail.com"
-                    className="text-cyan-300 hover:underline"
+                return (
+                  <div
+                    key={item.label}
+                    className="flex items-center gap-4"
                   >
-                    kamounimohamed22@gmail.com
-                  </a>
-                </div>
-              </div>
+                    <div
+                      className="
+                        flex h-12 w-12 shrink-0 items-center
+                        justify-center rounded-xl
+                        bg-cyan-50 text-cyan-600
+                        dark:bg-cyan-400/10 dark:text-cyan-400
+                      "
+                    >
+                      <Icon className="text-xl" />
+                    </div>
 
-              {/* Téléphone */}
-              <div className="flex items-center gap-4">
-                <span className="bg-cyan-900/60 p-3 rounded-full flex items-center justify-center">
-                  <FaPhone className="text-cyan-400 text-2xl" />
-                </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        {item.label}
+                      </p>
 
-                <div>
-                  <span className="block text-white font-semibold">
-                    Téléphone
-                  </span>
-
-                  <a
-                    href="tel:+212696649113"
-                    className="text-cyan-300 hover:underline"
-                  >
-                    +212 696 649 113
-                  </a>
-                </div>
-              </div>
-
-              {/* Localisation */}
-              <div className="flex items-center gap-4">
-                <span className="bg-cyan-900/60 p-3 rounded-full flex items-center justify-center">
-                  <FaMapMarkerAlt className="text-cyan-400 text-2xl" />
-                </span>
-
-                <div>
-                  <span className="block text-white font-semibold">
-                    Localisation
-                  </span>
-
-                  <span className="text-cyan-300">
-                    Settat, Maroc
-                  </span>
-                </div>
-              </div>
+                      {item.href ? (
+                        <a
+                          href={item.href}
+                          dir="ltr"
+                          className="
+                            break-all font-semibold
+                            text-slate-800 transition-colors
+                            hover:text-cyan-600
+                            dark:text-slate-100 dark:hover:text-cyan-400
+                          "
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        <p className="font-semibold text-slate-800 dark:text-slate-100">
+                          {item.value}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Réseaux sociaux */}
-            <div className="flex gap-4 mt-8">
-              <motion.a
-                whileHover={{ scale: 1.15 }}
-                href="https://github.com/Kamouni13-Mohamed"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Mon profil GitHub"
-                className="bg-gray-700 p-3 rounded-full text-white hover:text-cyan-400 text-2xl transition-colors duration-200"
-              >
-                <FaGithub />
-              </motion.a>
+            {/* CV download */}
+            <div
+              className="
+                mt-9 rounded-xl border border-cyan-200
+                bg-cyan-50/70 p-5
+                dark:border-cyan-400/20 dark:bg-cyan-400/5
+              "
+            >
+              <h4 className="font-bold text-slate-900 dark:text-white">
+                {t.cvTitle}
+              </h4>
 
-              <motion.a
-                whileHover={{ scale: 1.15 }}
-                href="https://www.linkedin.com/in/kamouni-mohamed/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Mon profil LinkedIn"
-                className="bg-gray-700 p-3 rounded-full text-white hover:text-cyan-400 text-2xl transition-colors duration-200"
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                {t.cvDescription}
+              </p>
+
+              <a
+                href={CV_URL}
+                download="CV_KAMOUNI_MOHAMED_IT.pdf"
+                className="
+                  mt-4 inline-flex w-full items-center
+                  justify-center gap-3 rounded-xl
+                  bg-gradient-to-r from-blue-700 to-cyan-500
+                  px-5 py-3.5 font-bold text-white
+                  shadow-lg shadow-cyan-500/15
+                  transition-all duration-300
+                  hover:-translate-y-0.5 hover:shadow-cyan-500/25
+                  focus:outline-none focus:ring-2
+                  focus:ring-cyan-500 focus:ring-offset-2
+                  dark:focus:ring-offset-[#112240]
+                "
               >
-                <FaLinkedin />
-              </motion.a>
+                <FaDownload />
+                {t.downloadCV}
+              </a>
+            </div>
+
+            {/* Social networks */}
+            <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-700">
+              <p className="mb-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
+                {t.socialTitle}
+              </p>
+
+              <div className="flex gap-4">
+                <motion.a
+                  whileHover={{ y: -4, scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  href="https://github.com/Kamouni13-Mohamed"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t.github}
+                  title={t.github}
+                  className="
+                    flex h-12 w-12 items-center justify-center
+                    rounded-xl bg-slate-100 text-2xl text-slate-800
+                    transition-colors hover:bg-cyan-100 hover:text-cyan-700
+                    dark:bg-slate-800 dark:text-white
+                    dark:hover:bg-cyan-400/10 dark:hover:text-cyan-400
+                  "
+                >
+                  <FaGithub />
+                </motion.a>
+
+                <motion.a
+                  whileHover={{ y: -4, scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  href="https://www.linkedin.com/in/kamouni-mohamed/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t.linkedin}
+                  title={t.linkedin}
+                  className="
+                    flex h-12 w-12 items-center justify-center
+                    rounded-xl bg-slate-100 text-2xl text-slate-800
+                    transition-colors hover:bg-cyan-100 hover:text-cyan-700
+                    dark:bg-slate-800 dark:text-white
+                    dark:hover:bg-cyan-400/10 dark:hover:text-cyan-400
+                  "
+                >
+                  <FaLinkedin />
+                </motion.a>
+              </div>
             </div>
           </motion.div>
 
-          {/* Formulaire de contact */}
+          {/* Contact form */}
           <motion.form
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 25 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             onSubmit={handleSubmit}
-            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-10 shadow-xl border border-gray-700/50 space-y-6"
+            className="
+              space-y-6 rounded-2xl border border-slate-200
+              bg-white p-6 shadow-xl shadow-slate-200/40
+              dark:border-slate-700/70 dark:bg-gradient-to-br
+              dark:from-[#112240] dark:to-[#0d1b32]
+              dark:shadow-black/20 sm:p-9 lg:p-10
+            "
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="Votre nom"
-                aria-label="Votre nom"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="bg-[#112240] text-white placeholder-gray-400 rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-gray-700"
-              />
+            <div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                {t.formTitle}
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                {t.formDescription}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="contact-name"
+                  className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200"
+                >
+                  {t.name}
+                </label>
+
+                <input
+                  id="contact-name"
+                  type="text"
+                  name="name"
+                  autoComplete="name"
+                  placeholder={t.namePlaceholder}
+                  value={formData.name}
+                  onChange={handleChange}
+                  minLength={2}
+                  maxLength={100}
+                  required
+                  className={inputClasses}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="contact-email"
+                  className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200"
+                >
+                  {t.emailLabel}
+                </label>
+
+                <input
+                  id="contact-email"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder={t.emailPlaceholder}
+                  value={formData.email}
+                  onChange={handleChange}
+                  maxLength={254}
+                  required
+                  className={inputClasses}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="contact-subject"
+                className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200"
+              >
+                {t.subject}
+              </label>
 
               <input
-                type="email"
-                name="email"
-                placeholder="Votre adresse e-mail"
-                aria-label="Votre adresse e-mail"
-                value={formData.email}
+                id="contact-subject"
+                type="text"
+                name="subject"
+                placeholder={t.subjectPlaceholder}
+                value={formData.subject}
                 onChange={handleChange}
+                minLength={3}
+                maxLength={150}
                 required
-                className="bg-[#112240] text-white placeholder-gray-400 rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-gray-700"
+                className={inputClasses}
               />
             </div>
 
-            <input
-              type="text"
-              name="subject"
-              placeholder="Objet du message"
-              aria-label="Objet du message"
-              value={formData.subject}
-              onChange={handleChange}
-              required
-              className="bg-[#112240] text-white placeholder-gray-400 rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-gray-700"
-            />
+            <div>
+              <label
+                htmlFor="contact-message"
+                className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200"
+              >
+                {t.message}
+              </label>
 
-            <textarea
-              name="message"
-              placeholder="Votre message"
-              aria-label="Votre message"
-              rows={5}
-              value={formData.message}
-              onChange={handleChange}
-              required
-              className="bg-[#112240] text-white placeholder-gray-400 rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-gray-700"
-            />
+              <textarea
+                id="contact-message"
+                name="message"
+                placeholder={t.messagePlaceholder}
+                rows={6}
+                value={formData.message}
+                onChange={handleChange}
+                minLength={10}
+                maxLength={5000}
+                required
+                className={`${inputClasses} resize-y`}
+              />
 
+              <p className="mt-2 text-right text-xs text-slate-500 dark:text-slate-400">
+                {formData.message.length}/5000 {t.characters}
+              </p>
+            </div>
+
+            {/* Error message */}
             {status.error && (
-              <div role="alert" className="text-red-400 text-sm">
-                {status.error}
+              <div
+                role="alert"
+                className="
+                  flex gap-3 rounded-xl border border-red-200
+                  bg-red-50 p-4 text-sm leading-6 text-red-700
+                  dark:border-red-400/20 dark:bg-red-400/10
+                  dark:text-red-300
+                "
+              >
+                <span className="font-bold">!</span>
+                <p>{status.error}</p>
               </div>
             )}
 
+            {/* Success message */}
             {status.submitted && (
-              <div role="status" className="text-green-400 text-sm">
-                Votre message a été envoyé avec succès !
+              <div
+                role="status"
+                aria-live="polite"
+                className="
+                  flex items-start gap-3 rounded-xl
+                  border border-green-200 bg-green-50 p-4
+                  text-sm leading-6 text-green-700
+                  dark:border-green-400/20 dark:bg-green-400/10
+                  dark:text-green-300
+                "
+              >
+                <FaCheckCircle className="mt-1 shrink-0" />
+                <p>{t.success}</p>
               </div>
             )}
 
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={status.submitting ? {} : { scale: 1.02 }}
+              whileTap={status.submitting ? {} : { scale: 0.98 }}
               type="submit"
               disabled={status.submitting}
-              className={`w-full bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-lg font-bold py-4 rounded-lg shadow-lg hover:from-cyan-500 hover:to-blue-600 transition-all duration-200 ${status.submitting
-                  ? 'opacity-50 cursor-not-allowed'
-                  : ''
-                }`}
+              className="
+                flex w-full items-center justify-center gap-3
+                rounded-xl bg-gradient-to-r from-blue-700 to-cyan-500
+                px-5 py-4 text-base font-bold text-white
+                shadow-lg shadow-cyan-500/15
+                transition-all duration-300
+                hover:from-cyan-500 hover:to-blue-700
+                disabled:cursor-not-allowed disabled:opacity-60
+                focus:outline-none focus:ring-2 focus:ring-cyan-500
+                focus:ring-offset-2 dark:focus:ring-offset-[#112240]
+              "
             >
-              {status.submitting
-                ? 'Envoi en cours...'
-                : 'Envoyer le message'}
+              {status.submitting ? (
+                <>
+                  <span
+                    className="
+                      h-5 w-5 animate-spin rounded-full
+                      border-2 border-white/40 border-t-white
+                    "
+                  />
+                  {t.sending}
+                </>
+              ) : (
+                <>
+                  <FaPaperPlane />
+                  {t.send}
+                </>
+              )}
             </motion.button>
+
+            <p className="text-center text-xs leading-5 text-slate-500 dark:text-slate-400">
+              {t.privacy}
+            </p>
           </motion.form>
         </div>
       </div>
