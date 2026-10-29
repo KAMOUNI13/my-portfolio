@@ -246,7 +246,7 @@ const Hero = () => {
             <motion.a
               whileHover={{ y: -4, scale: 1.07 }}
               whileTap={{ scale: 0.95 }}
-              href="https://github.com/Kamouni13-Mohamed"
+              href="https://github.com/KAMOUNI13"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"

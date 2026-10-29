@@ -315,7 +315,7 @@ const Footer = () => {
 
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://github.com/Kamouni13-Mohamed"
+                href="https://github.com/KAMOUNI13"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t.github}
