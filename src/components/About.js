@@ -36,6 +36,7 @@ const translations = {
     educationTitle: 'Formation académique',
     skillsLabel: 'COMPÉTENCES',
     skillsTitle: 'Mes domaines',
+
     labRole: 'Agent de laboratoire',
     labCompany: 'KHARROUBA COPPER MINING (KCM)',
     labPlace: 'El Kelâa des Sraghna, Maroc',
@@ -48,11 +49,12 @@ const translations = {
       'Saisie et traitement des données avec Microsoft Word et Excel',
       'Respect des procédures et attention aux détails',
     ],
+
     supportRole: 'Stagiaire — Support informatique',
     supportCompany: 'Société Régionale Multiservices (SRM)',
     supportPlace: 'Casablanca-Settat, Maroc',
     supportPeriod: 'Avr. 2024 – Mai 2024',
-    supportDescription:
+    supportExperienceDescription:
       'Participation aux activités d’assistance aux utilisateurs et de résolution de problèmes informatiques.',
     supportPoints: [
       'Assistance aux utilisateurs et support technique',
@@ -60,6 +62,7 @@ const translations = {
       'Résolution d’erreurs logicielles',
       'Identification de problèmes matériels et logiciels',
     ],
+
     current: 'En cours',
     degree: 'Diplôme obtenu',
     master: 'Master 2 d’excellence — Droit et Sécurité Numérique',
@@ -78,6 +81,7 @@ const translations = {
     bac: 'Baccalauréat — Sciences physiques',
     bacSchool: 'Lycée Allal Ben Abdellah',
     educationDescription: 'Formation académique et professionnelle.',
+
     webTitle: 'Développement Web Full Stack',
     webDescription:
       'Développement d’interfaces avec HTML, CSS, JavaScript et React, et création de fonctionnalités backend avec PHP et Laravel, avec utilisation de bases de données.',
@@ -90,6 +94,7 @@ const translations = {
     securityTitle: 'Droit et sécurité numérique',
     securityDescription:
       'Formation en droit du numérique et intérêt pour la cybersécurité, la protection des données et le cadre juridique du numérique.',
+
     techTitle: 'Technologies et outils',
     methodsTitle: 'Méthodes et outils de développement',
     officeTitle: 'Bureautique',
@@ -130,6 +135,11 @@ const translations = {
     contact: 'Contact me',
     experienceLabel: 'EXPERIENCE',
     experienceTitle: 'Professional experience',
+    educationLabel: 'EDUCATION',
+    educationTitle: 'Academic background',
+    skillsLabel: 'SKILLS',
+    skillsTitle: 'My areas',
+
     labRole: 'Laboratory Agent',
     labCompany: 'KHARROUBA COPPER MINING (KCM)',
     labPlace: 'El Kelâa des Sraghna, Morocco',
@@ -142,11 +152,12 @@ const translations = {
       'Data entry and processing using Microsoft Word and Excel',
       'Following procedures and paying attention to detail',
     ],
+
     supportRole: 'IT Support Intern',
     supportCompany: 'Société Régionale Multiservices (SRM)',
     supportPlace: 'Casablanca-Settat, Morocco',
     supportPeriod: 'Apr. 2024 – May 2024',
-    supportDescription:
+    supportExperienceDescription:
       'Participation in user assistance and IT troubleshooting activities.',
     supportPoints: [
       'User assistance and technical support',
@@ -154,10 +165,7 @@ const translations = {
       'Troubleshooting software errors',
       'Identifying hardware and software issues',
     ],
-    educationLabel: 'EDUCATION',
-    educationTitle: 'Academic background',
-    skillsLabel: 'SKILLS',
-    skillsTitle: 'My areas',
+
     current: 'In progress',
     degree: 'Degree obtained',
     master: 'Master 2 Excellence — Digital Law and Security',
@@ -176,6 +184,7 @@ const translations = {
     bac: 'Baccalaureate — Physical Sciences',
     bacSchool: 'Lycée Allal Ben Abdellah',
     educationDescription: 'Academic and vocational education.',
+
     webTitle: 'Full Stack Web Development',
     webDescription:
       'Building interfaces with HTML, CSS, JavaScript and React, and developing backend features with PHP and Laravel using databases.',
@@ -188,6 +197,7 @@ const translations = {
     securityTitle: 'Digital law and security',
     securityDescription:
       'Education in digital law and an interest in cybersecurity, data protection and digital regulation.',
+
     techTitle: 'Technologies and tools',
     methodsTitle: 'Development methods and tools',
     officeTitle: 'Office tools',
@@ -593,7 +603,7 @@ const About = () => {
               company={t.supportCompany}
               place={t.supportPlace}
               period={t.supportPeriod}
-              description={t.supportDescription}
+              description={t.supportExperienceDescription}
               points={t.supportPoints}
               delay={0.12}
             />
