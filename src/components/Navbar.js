@@ -45,15 +45,17 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
+
   const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === 'undefined') return true;
+    if (typeof window === 'undefined') return false;
 
     const savedTheme = localStorage.getItem('theme');
 
     if (savedTheme) return savedTheme === 'dark';
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return false;
   });
+  ;
 
   const [language, setLanguage] = useState(() => {
     if (typeof window === 'undefined') return 'fr';
@@ -166,31 +168,27 @@ const Navbar = () => {
         href={item.href}
         onClick={(event) => handleNavClick(event, item.href)}
         aria-current={isActive ? 'location' : undefined}
-        className={`group relative ${
-          mobile ? 'block rounded-xl px-4 py-3' : 'px-2 py-2'
-        } text-sm font-semibold transition-colors duration-300 ${
-          isActive
+        className={`group relative ${mobile ? 'block rounded-xl px-4 py-3' : 'px-2 py-2'
+          } text-sm font-semibold transition-colors duration-300 ${isActive
             ? 'text-sky-600 dark:text-cyan-400'
             : 'text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-white'
-        }`}
+          }`}
       >
         {t[item.key]}
 
         {!mobile && (
           <span
-            className={`absolute -bottom-1 left-2 right-2 h-0.5 rounded-full bg-sky-500 transition-transform duration-300 dark:bg-cyan-400 ${
-              isActive
+            className={`absolute -bottom-1 left-2 right-2 h-0.5 rounded-full bg-sky-500 transition-transform duration-300 dark:bg-cyan-400 ${isActive
                 ? 'scale-x-100'
                 : 'scale-x-0 group-hover:scale-x-100'
-            }`}
+              }`}
           />
         )}
 
         {mobile && (
           <span
-            className={`absolute bottom-2 left-0 top-2 w-0.5 rounded-full bg-sky-500 dark:bg-cyan-400 ${
-              isActive ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute bottom-2 left-0 top-2 w-0.5 rounded-full bg-sky-500 dark:bg-cyan-400 ${isActive ? 'opacity-100' : 'opacity-0'
+              }`}
           />
         )}
       </a>
@@ -228,9 +226,8 @@ const Navbar = () => {
     <a
       href="#contact"
       onClick={(event) => handleNavClick(event, '#contact')}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 dark:bg-cyan-400 dark:text-[#0a192f] dark:hover:bg-cyan-300 ${
-        mobile ? 'mt-3 w-full py-3' : ''
-      }`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 dark:bg-cyan-400 dark:text-[#0a192f] dark:hover:bg-cyan-300 ${mobile ? 'mt-3 w-full py-3' : ''
+        }`}
     >
       {t.talk}
       <span aria-hidden="true">↗</span>
@@ -239,15 +236,14 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
-        darkMode
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${darkMode
           ? scrolled
             ? 'border-white/10 bg-[#0a192f]/95 shadow-lg shadow-black/10 backdrop-blur-xl'
             : 'border-transparent bg-[#0a192f]/85 backdrop-blur-md'
           : scrolled
             ? 'border-slate-200 bg-white/95 shadow-lg shadow-slate-900/5 backdrop-blur-xl'
             : 'border-transparent bg-white/90 backdrop-blur-md'
-      }`}
+        }`}
     >
       <nav
         className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-8 lg:px-12"
