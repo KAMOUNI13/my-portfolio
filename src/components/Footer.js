@@ -64,8 +64,6 @@ const translations = {
     github: 'Visit my GitHub',
     linkedin: 'Visit my LinkedIn',
     backToTop: 'Back to top',
-    rights: 'All rights reserved.',
-    made: 'Built with passion by',
     role: 'Full Stack Developer & IT Support'
   }
 };
@@ -374,34 +372,31 @@ const Footer = () => {
           </p>
 
           <div className="flex flex-wrap items-center gap-5">
-            <span className="text-xs text-slate-500 dark:text-slate-500">
-              {t.made}{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-300">
-                KAMOUNI MOHAMED
-              </span>
-            </span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              KAMOUNI MOHAMED
+          </span>
 
-            <button
-              type="button"
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                })
-              }
-              className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-slate-600 transition-colors hover:bg-sky-50 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 dark:text-slate-400 dark:hover:bg-cyan-400/10 dark:hover:text-cyan-300"
-              aria-label={t.backToTop}
-              title={t.backToTop}
-            >
-              {t.backToTop}
-              <FaArrowUp aria-hidden="true" size={12} />
-            </button>
-          </div>
-
+          <button
+            type="button"
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              })
+            }
+            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-slate-600 transition-colors hover:bg-sky-50 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 dark:text-slate-400 dark:hover:bg-cyan-400/10 dark:hover:text-cyan-300"
+            aria-label={t.backToTop}
+            title={t.backToTop}
+          >
+            {t.backToTop}
+            <FaArrowUp aria-hidden="true" size={12} />
+          </button>
         </div>
 
       </div>
-    </footer>
+
+    </div>
+    </footer >
   );
 };
 

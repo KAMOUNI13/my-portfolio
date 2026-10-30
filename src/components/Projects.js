@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import {
   FaGithub,
   FaExternalLinkAlt,
-  FaTasks,
   FaBoxes,
   FaWallet,
   FaIndustry,
@@ -13,10 +12,12 @@ import {
   FaCode,
   FaLaptopCode,
   FaCheckCircle,
+  FaHome,
 } from 'react-icons/fa';
 
 import kharroubaImage from '../assets/images/kharrouba1.png';
 import myportfolioImage from '../assets/images/myportfolio.png';
+import darivaImage from '../assets/images/dariva_home_living.png';
 
 const translations = {
   fr: {
@@ -65,17 +66,17 @@ const translations = {
         ],
       },
       {
-        title: 'TaskFlow',
-        category: 'Application Web',
-        description:
-          'Application web de gestion des tâches permettant de planifier les activités, organiser les priorités et suivre efficacement l’avancement du travail.',
-        features: [
-          'Création et gestion des tâches',
-          'Suivi des priorités',
-          'Statut des activités',
-          'Organisation du travail',
-        ],
-      },
+  title: 'Dariva Home & Living',
+  category: 'E-commerce',
+  description:
+    'Plateforme e-commerce dédiée à l’univers de la maison et de la décoration, offrant une expérience de navigation moderne pour découvrir les produits et aménager son intérieur.',
+  features: [
+    'Catalogue de produits',
+    'Présentation des collections',
+    'Interface moderne et élégante',
+    'Navigation intuitive',
+  ],
+},
       {
         title: 'StockManager',
         category: 'Application Full Stack',
@@ -148,18 +149,18 @@ const translations = {
           'Responsive design',
         ],
       },
-      {
-        title: 'TaskFlow',
-        category: 'Web Application',
-        description:
-          'A task management web application for planning activities, organizing priorities, and efficiently tracking work progress.',
-        features: [
-          'Task creation and management',
-          'Priority tracking',
-          'Activity status',
-          'Work organization',
-        ],
-      },
+    {
+  title: 'Dariva Home & Living',
+  category: 'E-commerce Website',
+  description:
+    'An e-commerce platform dedicated to home living and decoration, offering a modern browsing experience to explore products and discover interior design inspiration.',
+  features: [
+    'Product catalog',
+    'Collection presentation',
+    'Modern and elegant interface',
+    'Intuitive navigation',
+  ],
+},
       {
         title: 'StockManager',
         category: 'Full Stack Application',
@@ -208,16 +209,15 @@ const projects = [
     live: 'https://my-portfolio-liart-five-85.vercel.app/',
     featured: false,
   },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&w=1000&q=85',
-    tech: ['React', 'JavaScript', 'Tailwind CSS'],
-    icon: <FaTasks />,
-    github: 'https://github.com/KAMOUNI13/taskflow',
-    live: 'https://taskflow-demo.example.com',
-    featured: false,
-  },
+ {
+  id: 3,
+  image: darivaImage,
+  tech: ['React', 'Vite', 'JavaScript', 'Tailwind CSS'],
+  icon: <FaHome />,
+  github: 'https://github.com/KAMOUNI13/dariva-home-living',
+  live: 'https://dariva-home-living.vercel.app/',
+  featured: false,
+},
   {
     id: 4,
     image:
