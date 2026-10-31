@@ -9,11 +9,7 @@ import {
   FaLinkedin,
   FaDownload,
   FaPaperPlane,
-  FaCheckCircle,
 } from 'react-icons/fa';
-
-const API_URL =
-  'https://formsubmit.co/ajax/kamounimohamed22@gmail.com';
 
 const CV_URL = '/CV_KAMOUNI_MOHAMED_IT.pdf';
 
@@ -67,13 +63,6 @@ const content = {
     messagePlaceholder: 'Écrivez votre message ici...',
     characters: 'caractères',
     send: 'Envoyer le message',
-    sending: 'Envoi en cours...',
-    success:
-      'Votre message a été envoyé avec succès. Merci pour votre prise de contact !',
-    sendError:
-      "L'envoi a échoué. Vérifiez la configuration de FormSubmit et réessayez.",
-    networkError:
-      "Une erreur est survenue. Vérifiez votre connexion et réessayez.",
     privacy:
       'Vos informations sont utilisées pour répondre à votre message.',
   },
@@ -110,13 +99,6 @@ const content = {
     messagePlaceholder: 'Write your message here...',
     characters: 'characters',
     send: 'Send message',
-    sending: 'Sending...',
-    success:
-      'Your message was sent successfully. Thank you for reaching out!',
-    sendError:
-      'Sending failed. Please check your FormSubmit configuration and try again.',
-    networkError:
-      'Something went wrong. Check your connection and try again.',
     privacy: 'Your information is used to respond to your message.',
   },
 };
@@ -133,12 +115,6 @@ const Contact = () => {
   });
 
   const [formData, setFormData] = useState(initialForm);
-
-  const [status, setStatus] = useState({
-    submitting: false,
-    submitted: false,
-    error: null,
-  });
 
   useEffect(() => {
     const handleLanguageChange = (event) => {
@@ -183,65 +159,6 @@ const Contact = () => {
       ...previous,
       [name]: value,
     }));
-
-    setStatus((previous) => ({
-      ...previous,
-      submitted: false,
-      error: null,
-    }));
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (status.submitting) return;
-
-    setStatus({
-      submitting: true,
-      submitted: false,
-      error: null,
-    });
-
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          _subject: `Portfolio - ${formData.subject}`,
-          _template: 'table',
-        }),
-      });
-
-      const result = await response.json();
-
-      if (
-        !response.ok ||
-        (result.success !== true && result.success !== 'true')
-      ) {
-        throw new Error('FORM_SUBMIT_FAILED');
-      }
-
-      setFormData({ ...initialForm });
-
-      setStatus({
-        submitting: false,
-        submitted: true,
-        error: null,
-      });
-    } catch (error) {
-      setStatus({
-        submitting: false,
-        submitted: false,
-        error:
-          error.message === 'FORM_SUBMIT_FAILED'
-            ? t.sendError
-            : t.networkError,
-      });
-    }
   };
 
   const contactItems = [
@@ -436,7 +353,7 @@ const Contact = () => {
                 <motion.a
                   whileHover={{ y: -4, scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  href="https://github.com/KAMOUNI13"
+                  href="https://github.com/kamouni13"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t.github}
@@ -476,11 +393,12 @@ const Contact = () => {
 
           {/* Contact form */}
           <motion.form
+            action="https://formsubmit.co/kamounimohamed22@gmail.com"
+            method="POST"
             initial={{ opacity: 0, x: 25 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            onSubmit={handleSubmit}
             className="
               space-y-6 rounded-2xl border border-slate-200
               bg-white p-6 shadow-xl shadow-slate-200/40
@@ -489,6 +407,18 @@ const Contact = () => {
               dark:shadow-black/20 sm:p-9 lg:p-10
             "
           >
+            <input
+              type="hidden"
+              name="_subject"
+              value="New message from my portfolio"
+            />
+
+            <input
+              type="hidden"
+              name="_template"
+              value="table"
+            />
+
             <div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                 {t.formTitle}
@@ -594,45 +524,10 @@ const Contact = () => {
               </p>
             </div>
 
-            {/* Error message */}
-            {status.error && (
-              <div
-                role="alert"
-                className="
-                  flex gap-3 rounded-xl border border-red-200
-                  bg-red-50 p-4 text-sm leading-6 text-red-700
-                  dark:border-red-400/20 dark:bg-red-400/10
-                  dark:text-red-300
-                "
-              >
-                <span className="font-bold">!</span>
-                <p>{status.error}</p>
-              </div>
-            )}
-
-            {/* Success message */}
-            {status.submitted && (
-              <div
-                role="status"
-                aria-live="polite"
-                className="
-                  flex items-start gap-3 rounded-xl
-                  border border-green-200 bg-green-50 p-4
-                  text-sm leading-6 text-green-700
-                  dark:border-green-400/20 dark:bg-green-400/10
-                  dark:text-green-300
-                "
-              >
-                <FaCheckCircle className="mt-1 shrink-0" />
-                <p>{t.success}</p>
-              </div>
-            )}
-
             <motion.button
-              whileHover={status.submitting ? {} : { scale: 1.02 }}
-              whileTap={status.submitting ? {} : { scale: 0.98 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
-              disabled={status.submitting}
               className="
                 flex w-full items-center justify-center gap-3
                 rounded-xl bg-gradient-to-r from-blue-700 to-cyan-500
@@ -640,27 +535,12 @@ const Contact = () => {
                 shadow-lg shadow-cyan-500/15
                 transition-all duration-300
                 hover:from-cyan-500 hover:to-blue-700
-                disabled:cursor-not-allowed disabled:opacity-60
                 focus:outline-none focus:ring-2 focus:ring-cyan-500
                 focus:ring-offset-2 dark:focus:ring-offset-[#112240]
               "
             >
-              {status.submitting ? (
-                <>
-                  <span
-                    className="
-                      h-5 w-5 animate-spin rounded-full
-                      border-2 border-white/40 border-t-white
-                    "
-                  />
-                  {t.sending}
-                </>
-              ) : (
-                <>
-                  <FaPaperPlane />
-                  {t.send}
-                </>
-              )}
+              <FaPaperPlane />
+              {t.send}
             </motion.button>
 
             <p className="text-center text-xs leading-5 text-slate-500 dark:text-slate-400">

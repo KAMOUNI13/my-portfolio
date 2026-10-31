@@ -138,26 +138,48 @@ const Navbar = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+
   const handleNavClick = (event, href) => {
     event.preventDefault();
+
+    const sectionId = href.slice(1);
+
+    // نسدّ المينيو فالهاتف
     setIsOpen(false);
 
-    const section = document.getElementById(href.slice(1));
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-    if (!section) return;
+    // فالهاتف كنتسناو حتى تسالي حركة إغلاق المينيو
+    const delay = isMobile ? 300 : 0;
 
-    setActiveSection(href.slice(1));
+    window.setTimeout(() => {
+      const section = document.getElementById(sectionId);
 
-    const top =
-      section.getBoundingClientRect().top + window.scrollY - 84;
+      if (!section) {
+        console.warn(`Section not found: #${sectionId}`);
+        return;
+      }
 
-    window.scrollTo({
-      top: Math.max(0, top),
-      behavior: 'smooth',
-    });
+      setActiveSection(sectionId);
 
-    window.history.replaceState(null, '', href);
+      // نحسب الموضع من بعد ما تسالي حركة المينيو
+      const header = document.querySelector('header');
+      const headerHeight = header?.offsetHeight || 76;
+
+      const top =
+        section.getBoundingClientRect().top +
+        window.scrollY -
+        headerHeight;
+
+      window.scrollTo({
+        top: Math.max(0, top),
+        behavior: 'smooth',
+      });
+
+      window.history.replaceState(null, '', href);
+    }, delay);
   };
+
 
   const renderNavLink = (item, mobile = false) => {
     const isActive = activeSection === item.key;
@@ -179,8 +201,8 @@ const Navbar = () => {
         {!mobile && (
           <span
             className={`absolute -bottom-1 left-2 right-2 h-0.5 rounded-full bg-sky-500 transition-transform duration-300 dark:bg-cyan-400 ${isActive
-                ? 'scale-x-100'
-                : 'scale-x-0 group-hover:scale-x-100'
+              ? 'scale-x-100'
+              : 'scale-x-0 group-hover:scale-x-100'
               }`}
           />
         )}
@@ -237,12 +259,12 @@ const Navbar = () => {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${darkMode
-          ? scrolled
-            ? 'border-white/10 bg-[#0a192f]/95 shadow-lg shadow-black/10 backdrop-blur-xl'
-            : 'border-transparent bg-[#0a192f]/85 backdrop-blur-md'
-          : scrolled
-            ? 'border-slate-200 bg-white/95 shadow-lg shadow-slate-900/5 backdrop-blur-xl'
-            : 'border-transparent bg-white/90 backdrop-blur-md'
+        ? scrolled
+          ? 'border-white/10 bg-[#0a192f]/95 shadow-lg shadow-black/10 backdrop-blur-xl'
+          : 'border-transparent bg-[#0a192f]/85 backdrop-blur-md'
+        : scrolled
+          ? 'border-slate-200 bg-white/95 shadow-lg shadow-slate-900/5 backdrop-blur-xl'
+          : 'border-transparent bg-white/90 backdrop-blur-md'
         }`}
     >
       <nav

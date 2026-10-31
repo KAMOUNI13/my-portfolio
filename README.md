@@ -26,7 +26,7 @@ Ce portfolio présente mon parcours, mes compétences techniques, mes projets et
 ## Installation locale
 
 ```bash
-git clone https://github.com/KAMOUNI13/my-portfolio.git
+git clone https://github.com/kamouni13/my-portfolio.git
 cd my-portfolio
 npm install
 npm start
@@ -41,5 +41,5 @@ npm run build
 ## Contact
 
 - Email : kamounimohamed22@gmail.com
-- GitHub : https://github.com/KAMOUNI13
+- GitHub : https://github.com/kamouni13
 - LinkedIn : https://www.linkedin.com/in/kamouni-mohamed/
